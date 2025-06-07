@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+
+.title {
+  cursor: pointer;
+  @apply text-xl font-bold;
+}
