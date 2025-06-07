@@ -1,39 +1,57 @@
 import PhraseCard from './PhraseCard.jsx';
-import { fetchData, fetchPartData } from '../scripts/csvConvertor.js';
+import { fetchPartData } from '../scripts/csvConvertor.js';
 import './css/Main.css';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Main() {
   const [data, setData] = useState({});
   const dataRef = useRef(0);
+  const loadingRef = useRef(false);
+  const timeoutRef = useRef(null); // debounce 타이머 저장
+
   const dataHandler = async () => {
+    if (loadingRef.current) return;
+
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      let loadedData = await fetchPartData(dataRef.current);
+      loadingRef.current = true;
+
+      let loadedData = await fetchPartData(dataRef.current++);
       if (!loadedData) {
         return;
       }
 
-      let freshData = Object.assign({}, data);
-      Object.entries(loadedData).forEach(([category, contents]) => {
-        if (!freshData[category]) {
-          freshData[category] = [];
-        }
-        freshData[category].push(...contents);
+      setData((prevData) => {
+        let freshData = { ...prevData };
+        Object.entries(loadedData).forEach(([category, contents]) => {
+          if (!freshData[category]) {
+            freshData[category] = [];
+          }
+          const existingIds = new Set(
+            freshData[category].map((item) => item.id)
+          );
+          const newContents = contents.filter(
+            (item) => !existingIds.has(item.id)
+          );
+          freshData[category].push(...newContents);
+        });
+        return freshData;
       });
-      setData(freshData);
-      dataRef.current += 1;
+      loadingRef.current = false;
     }
   };
 
-  useEffect(() => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      dataHandler();
-    }
+  const debounceHandler = () => {
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(dataHandler, 200); // 200ms debounce
+  };
 
-    window.addEventListener('scroll', dataHandler);
-    console.log(window.innerHeight, window.scrollY, document.body.offsetHeight);
+  useEffect(() => {
+    dataHandler();
+
+    window.addEventListener('scroll', debounceHandler);
     return () => {
-      window.removeEventListener('scroll', dataHandler);
+      window.removeEventListener('scroll', debounceHandler);
+      clearTimeout(timeoutRef.current); // 컴포넌트 언마운트 시 클리어
     };
   }, [data]);
 
