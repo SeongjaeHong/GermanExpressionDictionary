@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+.phraseCard {
+  @apply flex;
+  @apply border p-3 rounded-xl shadow-sm bg-zinc-200 mb-2 w-full;
+}
+
+.contents {
+  width: 87%;
+  @apply flex flex-col;
+}
+
+.german {
+  @apply text-lg font-semibold;
+}
+
+.translation {
+  @apply text-sm;
+}
+
+.category {
+  @apply size-fit p-1 border rounded-md bg-green-200 text-xs;
+}
