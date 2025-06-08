@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 export default function Main() {
   const [data, setData] = useState({});
   const dataRef = useRef(0);
-  const timeoutRef = useRef(null); // debounce 타이머 저장
+  const timeoutRef = useRef(null); // for debounce Timer
 
   const dataHandler = async () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
@@ -46,7 +46,7 @@ export default function Main() {
     window.addEventListener('scroll', debounceHandler);
     return () => {
       window.removeEventListener('scroll', debounceHandler);
-      clearTimeout(timeoutRef.current); // 컴포넌트 언마운트 시 클리어
+      clearTimeout(timeoutRef.current);
     };
   }, []);
 
