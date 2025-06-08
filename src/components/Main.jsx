@@ -28,20 +28,27 @@ export default function Main() {
     }
   };
 
-  const debounceHandler = () => {
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(dataHandler, 200); // 200ms debounce
-  };
-
   useEffect(() => {
-    dataHandler();
+    async function loadData() {
+      await dataHandler();
+
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        setTimeout(loadData, 200);
+      }
+    }
+    loadData();
+
+    const debounceHandler = () => {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(dataHandler, 200); // 200ms debounce
+    };
 
     window.addEventListener('scroll', debounceHandler);
     return () => {
       window.removeEventListener('scroll', debounceHandler);
       clearTimeout(timeoutRef.current); // 컴포넌트 언마운트 시 클리어
     };
-  }, [data]);
+  }, []);
 
   return (
     <main>
