@@ -6,15 +6,10 @@ import { useEffect, useRef, useState } from 'react';
 export default function Main() {
   const [data, setData] = useState({});
   const dataRef = useRef(0);
-  const loadingRef = useRef(false);
   const timeoutRef = useRef(null); // debounce 타이머 저장
 
   const dataHandler = async () => {
-    if (loadingRef.current) return;
-
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      loadingRef.current = true;
-
       let loadedData = await fetchPartData(dataRef.current++);
       if (!loadedData) {
         return;
@@ -26,17 +21,10 @@ export default function Main() {
           if (!freshData[category]) {
             freshData[category] = [];
           }
-          const existingIds = new Set(
-            freshData[category].map((item) => item.id)
-          );
-          const newContents = contents.filter(
-            (item) => !existingIds.has(item.id)
-          );
-          freshData[category].push(...newContents);
+          freshData[category].push(...contents);
         });
         return freshData;
       });
-      loadingRef.current = false;
     }
   };
 
