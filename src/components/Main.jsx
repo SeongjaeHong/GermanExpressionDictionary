@@ -21,7 +21,10 @@ export default function Main() {
           if (!freshData[category]) {
             freshData[category] = [];
           }
-          freshData[category].push(...contents);
+          const registeredIds = freshData[category].map((item) => item.id);
+          freshData[category].push(
+            ...contents.filter((item) => !registeredIds.includes(item.id))
+          );
         });
         return freshData;
       });
