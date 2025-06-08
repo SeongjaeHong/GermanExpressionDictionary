@@ -3,9 +3,39 @@ import { faStar as coloredFaStar } from '@fortawesome/free-solid-svg-icons';
 import './css/PhraseCard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
-export default function PhraseCard({ category, german, korean }) {
-  const [starred, setStar] = useState(false);
-  const starHandler = () => setStar(!starred);
+import { STARRED } from '../assets/constants';
+
+export default function PhraseCard({
+  id,
+  category,
+  german,
+  korean,
+  isStarred = false,
+}) {
+  const [starred, setStar] = useState(isStarred);
+  const starHandler = () => {
+    if (starred) {
+      const starredIds = JSON.parse(localStorage.getItem(STARRED));
+      if (!starredIds) {
+        return;
+      }
+
+      const newStarredIds = starredIds.filter((item) => item != id);
+      localStorage.setItem(
+        STARRED,
+        JSON.stringify(newStarredIds) // remove not starred id
+      );
+    } else {
+      let starredIds = JSON.parse(localStorage.getItem(STARRED));
+      if (!starredIds) {
+        starredIds = [];
+      }
+      starredIds.push(id);
+      localStorage.setItem(STARRED, JSON.stringify(starredIds)); // add starred id
+    }
+    setStar(!starred);
+  };
+
   return (
     <div className='phraseCard'>
       <div className='contents'>

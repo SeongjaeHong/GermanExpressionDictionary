@@ -4,11 +4,7 @@ import './index.css';
 import App from './App.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import Main from './components/Main.jsx';
-
-const ROUTES = {
-  home: '/',
-  starred: 'starred',
-};
+import { ROUTES } from './assets/constants.js';
 
 const routes = createBrowserRouter([
   {
