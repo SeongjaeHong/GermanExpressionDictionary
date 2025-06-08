@@ -44,3 +44,14 @@ export async function fetchPartData(index = 0) {
 
   return data;
 }
+
+export const STARRED = Symbol('starred');
+export async function fetchStarredData(index = 0) {
+  const data = {};
+  const unit = 5;
+  const start = index * unit + 1;
+  const end = start + unit > lines.length ? lines.length : start + unit;
+  if (start >= end) {
+    return null;
+  }
+}
