@@ -41,7 +41,7 @@ export function fetchPartData(index = 0, ids = null) {
     fetchedLines = lines;
   }
 
-  const unit = 5;
+  const unit = 10;
   const start = index * unit;
   const end =
     start + unit > fetchedLines.length ? fetchedLines.length : start + unit;
