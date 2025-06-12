@@ -1,5 +1,8 @@
 import { faStar } from '@fortawesome/free-regular-svg-icons';
-import { faStar as coloredFaStar } from '@fortawesome/free-solid-svg-icons';
+import {
+  faStar as coloredFaStar,
+  faHeadphones,
+} from '@fortawesome/free-solid-svg-icons';
 import './css/PhraseCard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
@@ -39,7 +42,13 @@ export default function PhraseCard({
   return (
     <div className='phraseCard'>
       <div className='contents'>
-        <p className='german'>{german}</p>
+        <p className='german'>
+          {german}
+          <button onClick={() => utteranceHandler(german)}>
+            &nbsp;
+            <FontAwesomeIcon icon={faHeadphones} />
+          </button>
+        </p>
         <p className='translation'>{korean}</p>
       </div>
       <div className='rightPannel'>
@@ -50,4 +59,10 @@ export default function PhraseCard({
       </div>
     </div>
   );
+}
+
+function utteranceHandler(sentence) {
+  const utterance = new SpeechSynthesisUtterance(sentence);
+  utterance.lang = 'de';
+  speechSynthesis.speak(utterance);
 }
