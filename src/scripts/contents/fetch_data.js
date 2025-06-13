@@ -1,30 +1,12 @@
 import { ROUTES, STARRED } from '../../assets/constants';
 
-const text = await fetch('data/sample.csv')
+const text = await fetch('/data/sample.csv')
   .then((res) => res.text())
   .catch((err) => console.error(err));
 const lines = text
   .split('\r\n')
   .filter((line) => line !== '')
   .slice(1); // first low is a column
-
-export function fetchData() {
-  const data = {};
-  for (const line of lines.slice(1)) {
-    if (!line) continue;
-    const tokens = line.split(',');
-    if (!(tokens[1] in data)) {
-      data[tokens[1]] = [];
-    }
-    data[tokens[1]].push({
-      id: tokens[0],
-      German: tokens[2],
-      Korean: tokens[3],
-    });
-  }
-
-  return data;
-}
 
 export const fetchFunctionHouse = {
   [ROUTES.home]: fetchPartData,
