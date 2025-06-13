@@ -6,12 +6,10 @@ import './css/Main.css';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import PhraseCard from './PhraseCard.jsx';
-import { CATEGORY_ALL } from '../assets/constants';
 import { useCategoryContext } from '../context/CategoryProvider.jsx';
 
 export default function PhraseCardList() {
   const [data, setData] = useState({});
-  const dataRef = useRef(0);
   const timeoutRef = useRef(null); // data loader timer
   const scrollTimeoutRef = useRef(null); // scroll debounce timer
   const location = useLocation();
@@ -23,28 +21,24 @@ export default function PhraseCardList() {
       setData({}); // clear previous contents
       clearTimeout(timeoutRef.current); // clear data loading by dataHandler
       clearTimeout(scrollTimeoutRef.current); // clear data loading by debounceHandler
-      dataRef.current = 0; // clear contents index
     }
 
+    const loadedData =
+      fetchFunctionHouse?.[location.pathname](selectedCategory);
     function loadData() {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        let loadedData = fetchFunctionHouse?.[location.pathname](
-          dataRef.current++
-        );
         if (!loadedData) {
-          return null;
+          return null; // there is no function key matched with [location.pathname]
+        }
+
+        let data = loadedData.next();
+        if (data.done) {
+          return null; // nothing to load more
         }
 
         setData((prevData) => {
           let freshData = { ...prevData };
-          Object.entries(loadedData).forEach(([category, contents]) => {
-            if (
-              selectedCategory !== CATEGORY_ALL &&
-              category !== selectedCategory
-            ) {
-              return; // collect only contents of the selected category
-            }
-
+          Object.entries(data.value).forEach(([category, contents]) => {
             if (!freshData[category]) {
               freshData[category] = [];
             }

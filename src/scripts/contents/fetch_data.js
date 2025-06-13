@@ -24,9 +24,7 @@ export const fetchFunctionHouse = {
   [ROUTES.starred]: fetchStarredData,
 };
 
-export function fetchPartData(index = 0, ids = null) {
-  const data = {};
-
+export function* fetchPartData(category = CATEGORY_ALL, ids = null) {
   let fetchedLines = [];
   if (ids instanceof Array) {
     fetchedLines = ids.map((id) => lines[id - 1]);
@@ -34,35 +32,44 @@ export function fetchPartData(index = 0, ids = null) {
     fetchedLines = lines;
   }
 
-  const unit = 10;
-  const start = index * unit;
-  const end =
-    start + unit > fetchedLines.length ? fetchedLines.length : start + unit;
-  if (start >= end) {
-    return null;
-  }
+  const yiled_unit = 10;
+  let data = {};
+  let current_idx = 0;
+  let yiled_unit_cnt = 0;
+  while (current_idx < fetchedLines.length) {
+    const tokens = fetchedLines[current_idx++].split(',');
+    if (category !== CATEGORY_ALL && tokens[1] !== category) {
+      continue;
+    }
 
-  for (const line of fetchedLines.slice(start, end)) {
-    const tokens = line.split(',');
     if (!(tokens[1] in data)) {
       data[tokens[1]] = [];
     }
+
     data[tokens[1]].push({
       id: tokens[0],
       German: tokens[2],
       Korean: tokens[3],
     });
+
+    if (++yiled_unit_cnt === yiled_unit) {
+      yield data;
+      data = {};
+      yiled_unit_cnt = 0;
+    }
   }
 
-  return data;
+  if (Object.keys(data).length) {
+    yield data;
+  }
 }
 
-export function fetchStarredData(index = 0) {
+export function fetchStarredData(category = CATEGORY_ALL) {
   const starredIds = JSON.parse(localStorage.getItem(STARRED));
   if (starredIds instanceof Array && !starredIds.length) return null;
   else if (!starredIds) return null;
 
-  return fetchPartData(index, starredIds);
+  return fetchPartData(category, starredIds);
 }
 
 export function getStarredIds() {
