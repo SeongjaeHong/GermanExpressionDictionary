@@ -4,3 +4,4 @@ export const ROUTES = {
 };
 
 export const STARRED = 'starred';
+export const CATEGORY_ALL = '카테고리';

@@ -2,11 +2,34 @@
 header {
   position: sticky;
   top: 0;
-  padding: 1rem;
+  margin-bottom: 1rem;
   @apply flex justify-between items-center;
   @apply bg-rose-200;
 }
 
-.title {
+#title {
+  padding-left: 1rem;
   @apply text-xl font-bold;
+}
+
+.menu {
+  @apply flex;
+}
+
+#menubar {
+  padding: 1rem;
+  @apply text-xl font-bold;
+}
+
+#starred {
+  position: relative;
+  padding: 1rem;
+  @apply text-sm font-bold;
+}
+
+#category-list {
+  position: relative;
+  width: 120px;
+  padding: 1rem;
+  @apply text-sm font-bold;
 }

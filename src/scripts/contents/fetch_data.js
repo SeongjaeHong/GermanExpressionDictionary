@@ -1,4 +1,4 @@
-import { ROUTES, STARRED } from '../../assets/constants';
+import { CATEGORY_ALL, ROUTES, STARRED } from '../../assets/constants';
 
 const text = await fetch('/data/sample.csv')
   .then((res) => res.text())
@@ -7,6 +7,17 @@ const lines = text
   .split('\r\n')
   .filter((line) => line !== '')
   .slice(1); // first low is a column
+
+const categories = [CATEGORY_ALL];
+for (const line of lines) {
+  const category = line.split(',')[1];
+  if (!categories.includes(category)) {
+    categories.push(category);
+  }
+}
+export function getCategories() {
+  return categories;
+}
 
 export const fetchFunctionHouse = {
   [ROUTES.home]: fetchPartData,

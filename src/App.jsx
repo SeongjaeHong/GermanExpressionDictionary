@@ -1,11 +1,14 @@
 import { Outlet } from 'react-router';
 import Header from './components/Header.jsx';
+import CategoryProvider from './context/CategoryProvider.jsx';
 
 export default function App() {
   return (
     <>
-      <Header />
-      <Outlet />
+      <CategoryProvider>
+        <Header />
+        <Outlet />
+      </CategoryProvider>
     </>
   );
 }

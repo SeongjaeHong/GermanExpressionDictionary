@@ -6,6 +6,8 @@ import './css/Main.css';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import PhraseCard from './PhraseCard.jsx';
+import { CATEGORY_ALL } from '../assets/constants';
+import { useCategoryContext } from '../context/CategoryProvider.jsx';
 
 export default function PhraseCardList() {
   const [data, setData] = useState({});
@@ -14,6 +16,7 @@ export default function PhraseCardList() {
   const scrollTimeoutRef = useRef(null); // scroll debounce timer
   const location = useLocation();
   const starredIds = getStarredIds();
+  const selectedCategory = useCategoryContext();
 
   useEffect(() => {
     function clearEnvironment() {
@@ -35,6 +38,13 @@ export default function PhraseCardList() {
         setData((prevData) => {
           let freshData = { ...prevData };
           Object.entries(loadedData).forEach(([category, contents]) => {
+            if (
+              selectedCategory !== CATEGORY_ALL &&
+              category !== selectedCategory
+            ) {
+              return; // collect only contents of the selected category
+            }
+
             if (!freshData[category]) {
               freshData[category] = [];
             }
@@ -74,7 +84,8 @@ export default function PhraseCardList() {
       window.removeEventListener('scroll', debounceHandler);
       clearTimeout(timeoutRef.current);
     };
-  }, [location.pathname]);
+  }, [location.pathname, selectedCategory]);
+
   return (
     <>
       {Object.entries(data).map(([category, contents]) =>
