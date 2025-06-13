@@ -1,10 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router';
 import './index.css';
 import App from './App.jsx';
-import { createBrowserRouter, RouterProvider } from 'react-router';
-import Main from './components/Main.jsx';
 import { ROUTES } from './assets/constants.js';
+import Main from './components/Main.jsx';
 
 const routes = createBrowserRouter([
   {
@@ -21,7 +21,6 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/service_worker.js')
-      .then((reg) => console.log('✅ SW registered:', reg.scope))
       .catch((err) => console.error('❌ SW registration failed:', err));
   });
 }
