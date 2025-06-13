@@ -1,5 +1,8 @@
 @import 'tailwindcss';
-
+header {
+  padding: 1rem;
+  @apply flex justify-between items-center;
+}
 .title {
   @apply text-xl font-bold;
 }

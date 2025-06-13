@@ -2,8 +2,9 @@
 
 .phraseCard {
   padding: 0.7rem 1rem;
+  width: clamp(18rem, 70%, 50rem);
   @apply flex justify-between;
-  @apply border rounded-xl shadow-sm bg-zinc-300 mb-2 w-full;
+  @apply border rounded-xl shadow-sm bg-zinc-300 mb-2;
 }
 
 .contents {
@@ -34,5 +35,4 @@
   padding: 0.5rem 0.5rem 0.3rem 0.3rem;
   margin-top: -0.5rem;
   margin-right: -0.5rem;
-  cursor: pointer;
 }

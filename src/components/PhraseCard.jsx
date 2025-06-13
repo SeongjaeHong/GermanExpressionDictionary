@@ -53,9 +53,9 @@ export default function PhraseCard({
       </div>
       <div className='rightPannel'>
         <div className='category'>{category}</div>
-        <div className='star' onClick={starHandler}>
+        <button className='star' onClick={starHandler}>
           <FontAwesomeIcon icon={starred ? coloredFaStar : faStar} />
-        </div>
+        </button>
       </div>
     </div>
   );
