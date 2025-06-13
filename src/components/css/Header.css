@@ -1,8 +1,12 @@
 @import 'tailwindcss';
 header {
+  position: sticky;
+  top: 0;
   padding: 1rem;
   @apply flex justify-between items-center;
+  @apply bg-rose-200;
 }
+
 .title {
   @apply text-xl font-bold;
 }
