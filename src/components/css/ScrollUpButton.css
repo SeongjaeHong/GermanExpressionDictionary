@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+
+#arrow-up {
+  height: 2rem;
+  position: fixed;
+  bottom: 6rem;
+  right: 2%;
+}
+
+@media screen and (min-width: 400px) {
+  #arrow-up {
+    right: 5%;
+  }
+}
+
+@media screen and (min-width: 1250px) {
+  #arrow-up {
+    right: calc((100% - 50rem) / 2 - 10rem);
+  }
+}
