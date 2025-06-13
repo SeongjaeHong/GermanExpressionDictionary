@@ -4,11 +4,13 @@
   padding: 0.7rem 1rem;
   width: clamp(18rem, 70%, 50rem);
   @apply flex justify-between;
-  @apply border rounded-xl shadow-sm bg-zinc-300 mb-2;
+  @apply border rounded-xl shadow-sm;
+  @apply bg-zinc-300;
+  @apply mb-2;
 }
 
 .contents {
-  overflow-wrap: break-word;
+  word-break: break-all;
   @apply flex flex-col;
 }
 
@@ -26,7 +28,11 @@
 }
 
 .category {
-  @apply size-fit p-1 border rounded-md bg-green-200 text-xs;
+  padding: 4px;
+  height: fit-content;
+  @apply border rounded-md;
+  @apply bg-green-200;
+  @apply text-xs;
 }
 
 .star {
