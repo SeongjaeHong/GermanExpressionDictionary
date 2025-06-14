@@ -74,8 +74,10 @@ export default function PhraseCardList() {
     setTimeout(dataHandler, 200); // clearEnvrionment needs time to re-render to empty the page.
 
     window.addEventListener('scroll', debounceHandler);
+    window.addEventListener('resize', debounceHandler);
     return () => {
       window.removeEventListener('scroll', debounceHandler);
+      window.removeEventListener('resize', debounceHandler);
       clearTimeout(timeoutRef.current);
     };
   }, [location.pathname, selectedCategory]);
