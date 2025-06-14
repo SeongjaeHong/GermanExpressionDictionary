@@ -43,7 +43,7 @@ export default function Header() {
         )}
         {!mobileScreen && (
           <>
-            <h1 id='starred'>
+            <h1 id='starredLink'>
               <Link to={ROUTES.starred} onClick={starredLinkHandler}>
                 즐겨찾기
               </Link>

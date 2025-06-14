@@ -21,7 +21,7 @@ header {
   @apply text-xl font-bold;
 }
 
-#starred {
+#starredLink {
   position: relative;
   padding: 1rem;
   @apply text-sm font-bold;
