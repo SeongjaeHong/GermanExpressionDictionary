@@ -7,9 +7,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import PhraseCard from './PhraseCard.jsx';
 import { useCategoryContext } from '../context/CategoryProvider.jsx';
+import { ROUTES } from '../assets/constants.js';
 
 export default function PhraseCardList() {
   const [data, setData] = useState({});
+  const loadStateRef = useRef(null);
+  const [loadState, setLoadState] = useState(null); // to re-render when loadStateRef == 'empty'
   const timeoutRef = useRef(null); // data loader timer
   const scrollTimeoutRef = useRef(null); // scroll debounce timer
   const location = useLocation();
@@ -17,28 +20,37 @@ export default function PhraseCardList() {
   const selectedCategory = useCategoryContext();
 
   useEffect(() => {
+    const loadedData =
+      fetchFunctionHouse?.[location.pathname](selectedCategory);
+
     function clearEnvironment() {
       setData({}); // clear previous contents
+      setLoadState(null);
+      loadStateRef.current = null; // clear data load state
       clearTimeout(timeoutRef.current); // clear data loading by dataHandler
       clearTimeout(scrollTimeoutRef.current); // clear data loading by debounceHandler
     }
 
-    const loadedData =
-      fetchFunctionHouse?.[location.pathname](selectedCategory);
     function loadData() {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
         if (!loadedData) {
-          return null; // there is no function key matched with [location.pathname]
+          loadStateRef.current = null; // there is no function matched with [location.pathname]
+          return;
         }
 
-        let data = loadedData.next();
-        if (data.done) {
-          return null; // nothing to load more
+        let nextData = loadedData.next();
+        if (nextData.done) {
+          if (!loadStateRef.current) {
+            loadStateRef.current = 'empty'; // nothing to load more
+            setLoadState('empty');
+          }
+          loadStateRef.current = null;
+          return;
         }
 
         setData((prevData) => {
           let freshData = { ...prevData };
-          Object.entries(data.value).forEach(([category, contents]) => {
+          Object.entries(nextData.value).forEach(([category, contents]) => {
             if (!freshData[category]) {
               freshData[category] = [];
             }
@@ -49,15 +61,16 @@ export default function PhraseCardList() {
           });
           return freshData;
         });
+        loadStateRef.current = true;
+        return;
       }
-      return true;
     }
 
     function dataHandler() {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        const completed = loadData();
-        if (!completed) {
-          return; // failed to load data
+        loadData();
+        if (!loadStateRef.current || loadStateRef.current == 'empty') {
+          return; // no data to load anymore
         }
 
         clearTimeout(timeoutRef.current);
@@ -71,7 +84,7 @@ export default function PhraseCardList() {
     }
 
     clearEnvironment();
-    setTimeout(dataHandler, 200); // clearEnvrionment needs time to re-render to empty the page.
+    setTimeout(dataHandler, 200); // clearEnvrionment needs to re-render to empty the page before loading data.
 
     window.addEventListener('scroll', debounceHandler);
     window.addEventListener('resize', debounceHandler);
@@ -95,6 +108,13 @@ export default function PhraseCardList() {
             isStarred={starredIds.includes(id)}
           ></PhraseCard>
         ))
+      )}
+      {loadState == 'empty' && (
+        <div id='empty-message'>
+          {location.pathname === ROUTES.starred
+            ? '독일어 표현을 즐겨찾기 해주세요!'
+            : '표시할 독일어 표현이 없습니다.'}
+        </div>
       )}
     </>
   );

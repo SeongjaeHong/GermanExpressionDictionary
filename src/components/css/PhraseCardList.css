@@ -4,3 +4,9 @@
   width: 100%;
   @apply flex flex-col items-center;
 }
+
+#empty-message {
+  color: rgb(51, 51, 51);
+  font-size: large;
+  font-weight: bold;
+}
