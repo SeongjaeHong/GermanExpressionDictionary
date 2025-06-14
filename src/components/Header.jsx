@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import './css/Header.css';
-import { ROUTES } from '../assets/constants';
+import { CATEGORY_ALL, ROUTES } from '../assets/constants';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
@@ -10,6 +10,10 @@ import { useCategorySetterContext } from '../context/CategoryProvider';
 export default function Header() {
   const [mobileScreen, setMobileScreen] = useState(false);
   const categorySetter = useCategorySetterContext();
+  const starredLinkHandler = () => {
+    categorySetter(CATEGORY_ALL);
+    document.querySelector('#category-list').selectedIndex = 0;
+  };
 
   useEffect(() => {
     function resizeHandler() {
@@ -40,7 +44,9 @@ export default function Header() {
         {!mobileScreen && (
           <>
             <h1 id='starred'>
-              <Link to={ROUTES.starred}>즐겨찾기</Link>
+              <Link to={ROUTES.starred} onClick={starredLinkHandler}>
+                즐겨찾기
+              </Link>
             </h1>
             <select
               id='category-list'
