@@ -1,0 +1,14 @@
+@import 'tailwindcss';
+
+#starredLink {
+  position: relative;
+  padding: 1rem;
+  @apply text-sm font-bold;
+}
+
+#category-list {
+  position: relative;
+  width: 120px;
+  padding: 1rem;
+  @apply text-sm font-bold;
+}

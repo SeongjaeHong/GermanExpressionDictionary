@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+
+#menubar {
+  padding: 1rem;
+  @apply text-xl font-bold;
+}
