@@ -1,12 +1,14 @@
 import { Link } from 'react-router';
 import { useEffect, useState } from 'react';
-import './css/Header.css';
 import MenubarButton from './mobile/MenubarButton';
-import { ROUTES } from '../../assets/constants';
 import MenuTab from './MenuTab';
+import { CATEGORY_ALL, ROUTES } from '../../assets/constants';
+import { useCategorySetterContext } from '../../context/CategoryProvider';
+import './css/Header.css';
 
 export default function Header() {
   const [mobileScreen, setMobileScreen] = useState(false);
+  const initCategorySelection = useInitCategorySelection();
 
   useEffect(() => {
     function resizeHandler() {
@@ -26,7 +28,9 @@ export default function Header() {
   return (
     <header>
       <h1 id='title'>
-        <Link to={ROUTES.home}>독일 생활 표현 사전</Link>
+        <Link to={ROUTES.home} onClick={initCategorySelection}>
+          독일 생활 표현 사전
+        </Link>
       </h1>
       <div className='menu'>
         {mobileScreen && <MenubarButton />}
@@ -44,4 +48,12 @@ function menuHandler() {
   1. 즐겨찾기
   2. 카테고리
    */
+}
+
+export function useInitCategorySelection() {
+  const categorySetter = useCategorySetterContext();
+  return () => {
+    categorySetter(CATEGORY_ALL);
+    document.querySelector('#category-list').selectedIndex = 0;
+  };
 }

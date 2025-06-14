@@ -1,15 +1,13 @@
+import { Link } from 'react-router';
 import { useCategorySetterContext } from '../../context/CategoryProvider';
 import { getCategories } from '../../scripts/contents/fetch_data';
-import { CATEGORY_ALL, ROUTES } from '../../assets/constants';
-import { Link } from 'react-router';
+import { ROUTES } from '../../assets/constants';
+import { useInitCategorySelection } from './Header';
 import './css/MenuTab.css';
 
 export default function MenuTab() {
   const categorySetter = useCategorySetterContext();
-  const starredLinkHandler = () => {
-    categorySetter(CATEGORY_ALL);
-    document.querySelector('#category-list').selectedIndex = 0;
-  };
+  const starredLinkHandler = useInitCategorySelection();
   return (
     <>
       <h1 id='starredLink'>
