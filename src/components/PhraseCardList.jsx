@@ -12,7 +12,6 @@ import { ROUTES } from '../assets/constants.js';
 export default function PhraseCardList() {
   const [data, setData] = useState({});
   const timeoutRef = useRef(null); // data loader timer
-  const scrollTimeoutRef = useRef(null); // scroll debounce timer
   const location = useLocation();
   const starredIds = getStarredIds();
   const selectedCategory = useCategoryContext();
@@ -24,7 +23,6 @@ export default function PhraseCardList() {
     function clearEnvironment() {
       setData({}); // clear previous contents
       clearTimeout(timeoutRef.current); // clear data loading by dataHandler
-      clearTimeout(scrollTimeoutRef.current); // clear data loading by debounceHandler
     }
 
     function loadData() {
@@ -61,21 +59,16 @@ export default function PhraseCardList() {
       }
     }
 
-    function debounceHandler() {
-      clearTimeout(scrollTimeoutRef.current);
-      scrollTimeoutRef.current = setTimeout(dataHandler, 200);
-    }
-
     if (loadedData) {
       clearEnvironment();
       setTimeout(dataHandler, 200); // clearEnvrionment needs to re-render to empty the page before loading data.
     }
 
-    window.addEventListener('scroll', debounceHandler);
-    window.addEventListener('resize', debounceHandler);
+    window.addEventListener('scroll', dataHandler);
+    window.addEventListener('resize', dataHandler);
     return () => {
-      window.removeEventListener('scroll', debounceHandler);
-      window.removeEventListener('resize', debounceHandler);
+      window.removeEventListener('scroll', dataHandler);
+      window.removeEventListener('resize', dataHandler);
       clearTimeout(timeoutRef.current);
     };
   }, [location.pathname, selectedCategory]);
