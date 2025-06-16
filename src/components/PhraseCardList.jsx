@@ -44,6 +44,7 @@ export default function PhraseCardList() {
         });
         return freshData;
       });
+
       return { done: false };
     }
 
@@ -61,7 +62,7 @@ export default function PhraseCardList() {
 
     if (loadedData) {
       clearEnvironment();
-      setTimeout(dataHandler, 200); // clearEnvrionment needs to re-render to empty the page before loading data.
+      timeoutRef.current = setTimeout(dataHandler, 200); // clearEnvrionment needs to re-render to empty the page before loading data.
     }
 
     window.addEventListener('scroll', dataHandler);
