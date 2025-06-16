@@ -11,8 +11,6 @@ import { ROUTES } from '../assets/constants.js';
 
 export default function PhraseCardList() {
   const [data, setData] = useState({});
-  const loadStateRef = useRef(null);
-  const [loadState, setLoadState] = useState(null); // to re-render when loadStateRef == 'empty'
   const timeoutRef = useRef(null); // data loader timer
   const scrollTimeoutRef = useRef(null); // scroll debounce timer
   const location = useLocation();
@@ -25,51 +23,36 @@ export default function PhraseCardList() {
 
     function clearEnvironment() {
       setData({}); // clear previous contents
-      setLoadState(null);
-      loadStateRef.current = null; // clear data load state
       clearTimeout(timeoutRef.current); // clear data loading by dataHandler
       clearTimeout(scrollTimeoutRef.current); // clear data loading by debounceHandler
     }
 
     function loadData() {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        if (!loadedData) {
-          loadStateRef.current = null; // there is no function matched with [location.pathname]
-          return;
-        }
-
-        let nextData = loadedData.next();
-        if (nextData.done) {
-          if (!loadStateRef.current) {
-            loadStateRef.current = 'empty'; // nothing to load more
-            setLoadState('empty');
-          }
-          loadStateRef.current = null;
-          return;
-        }
-
-        setData((prevData) => {
-          let freshData = { ...prevData };
-          Object.entries(nextData.value).forEach(([category, contents]) => {
-            if (!freshData[category]) {
-              freshData[category] = [];
-            }
-            const registeredIds = freshData[category].map((item) => item.id);
-            freshData[category].push(
-              ...contents.filter((item) => !registeredIds.includes(item.id))
-            );
-          });
-          return freshData;
-        });
-        loadStateRef.current = true;
-        return;
+      let nextData = loadedData.next();
+      if (nextData.done) {
+        return { done: true };
       }
+
+      setData((prevData) => {
+        let freshData = { ...prevData };
+        Object.entries(nextData.value).forEach(([category, contents]) => {
+          if (!freshData[category]) {
+            freshData[category] = [];
+          }
+          const registeredIds = freshData[category].map((item) => item.id);
+          freshData[category].push(
+            ...contents.filter((item) => !registeredIds.includes(item.id))
+          );
+        });
+        return freshData;
+      });
+      return { done: false };
     }
 
     function dataHandler() {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        loadData();
-        if (!loadStateRef.current || loadStateRef.current == 'empty') {
+        const { done } = loadData();
+        if (done) {
           return; // no data to load anymore
         }
 
@@ -83,8 +66,10 @@ export default function PhraseCardList() {
       scrollTimeoutRef.current = setTimeout(dataHandler, 200);
     }
 
-    clearEnvironment();
-    setTimeout(dataHandler, 200); // clearEnvrionment needs to re-render to empty the page before loading data.
+    if (loadedData) {
+      clearEnvironment();
+      setTimeout(dataHandler, 200); // clearEnvrionment needs to re-render to empty the page before loading data.
+    }
 
     window.addEventListener('scroll', debounceHandler);
     window.addEventListener('resize', debounceHandler);
@@ -109,7 +94,7 @@ export default function PhraseCardList() {
           ></PhraseCard>
         ))
       )}
-      {loadState == 'empty' && (
+      {!Object.keys(data).length && (
         <div id='empty-message'>
           {location.pathname === ROUTES.starred
             ? '독일어 표현을 즐겨찾기 해주세요!'
